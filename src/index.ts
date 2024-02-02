@@ -18,8 +18,12 @@ app.get('/', (_, res) => {
   });
 });
 
-// API routes
+// Import routes
+import userRoute from './routes/userRoute';
 
-// Using the global error handler middleware for handling errors globally
+// API routes
+app.use('/api/v1', userRoute);
+
+// Global error handler middleware
 
 export default app;
