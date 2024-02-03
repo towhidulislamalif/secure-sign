@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { IUser } from '../interface';
+import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema<IUser>(
   {
@@ -55,5 +56,13 @@ const userSchema = new mongoose.Schema<IUser>(
     versionKey: false,
   },
 );
+
+// Pre-save hook for password hashing
+userSchema.pre('save', async function (next) {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+  next();
+});
 
 export const User = mongoose.model<IUser>('User', userSchema);
