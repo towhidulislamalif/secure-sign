@@ -4,6 +4,7 @@ import { User } from '../models/userModel';
 import { APIError } from '../utils/ApiError';
 import { asyncRequestHandler } from '../utils/asyncRequestHandler';
 import { sendApiResponse } from '../utils/sendApiResponse';
+import { sendEmail } from '../utils/sendEmail';
 
 export const registerUser = asyncRequestHandler(async (req, res) => {
   const userData = req.body;
@@ -113,6 +114,36 @@ export const passwordChange = asyncRequestHandler(async (req, res) => {
     success: true,
     status: 200,
     message: 'Password updated successfully',
+    data: null,
+  });
+});
+
+export const passwordForget = asyncRequestHandler(async (req, res) => {
+  const userData = req.body;
+
+  const { email } = userData;
+
+  if (!email) {
+    throw new APIError(400, 'Email missing');
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new APIError(404, 'User not found');
+  }
+
+  const access_token = user.generateAccessToken();
+
+  const generateLink = `${config.uiLink}?_id=${user._id}&token=${access_token}`;
+
+  // console.log('🚀 ~ passwordForget ~ generateLink:', generateLink);
+  sendEmail(email, generateLink);
+
+  sendApiResponse(res, {
+    success: true,
+    status: 200,
+    message: 'Sent email successfully',
     data: null,
   });
 });

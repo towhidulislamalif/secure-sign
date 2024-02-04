@@ -8,12 +8,15 @@ dotenv.config({ path: path.join(process.cwd(), '.env') });
 const config = {
   node_env: process.env.NODE_ENV,
   origin: process.env.CORS_ORIGIN,
+  uiLink: process.env.UI_LINK,
   port: process.env.PORT || 8080, // Default port is 8080 if not specified
   mongodbURI: process.env.MONGODB_URI,
   access_token_secret: process.env.ACCESS_TOKEN_SECRET,
   refresh_token_secret: process.env.REFRESH_TOKEN_SECRET,
   access_token_expiry: process.env.ACCESS_TOKEN_EXPIRY,
   refresh_token_expiry: process.env.REFRESH_TOKEN_EXPIRY,
+  gmail: process.env.GMAIL_ADDRESS,
+  gmail_pass: process.env.GMAIL_PASSWORD,
 };
 
 export default config;
