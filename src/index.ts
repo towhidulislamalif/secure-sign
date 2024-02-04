@@ -25,6 +25,17 @@ import userRoute from './routes/userRoute';
 // API routes
 app.use('/api/v1', userRoute);
 
+// Not found route
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+app.use((_, res, next) => {
+  res.status(404).json({
+    success: false,
+    code: 404,
+    message:
+      'The requested resource was not found on the server. Please check the URL and try again.',
+  });
+});
+
 // Global error handler middleware
 app.use(globalErrorHandler);
 
