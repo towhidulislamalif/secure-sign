@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser } from '../controllers/userController';
+import { loginUser, registerUser } from '../controllers/userController';
 
 const router = express.Router();
 
@@ -7,6 +7,6 @@ const router = express.Router();
 router.post('/register', registerUser);
 
 // Route: POST /api/v1/login
-router.post('/login');
+router.post('/login', loginUser);
 
 export default router;
