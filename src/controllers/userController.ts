@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
 import { User } from '../models/userModel';
 import { APIError } from '../utils/ApiError';
@@ -177,7 +176,7 @@ export const passwordReset = asyncRequestHandler(async (req, res) => {
     throw new APIError(404, 'User not found');
   }
 
-  const decoded = jwt.verify(token, config.access_token_secret as string) as JwtPayload;
+  const decoded = verifytoken(token, config.access_token_secret as string);
 
   if (user.email !== decoded.email) {
     throw new APIError(401, 'Invalid token');
