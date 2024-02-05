@@ -3,6 +3,7 @@ import {
   loginUser,
   passwordChange,
   passwordForget,
+  passwordReset,
   registerUser,
 } from '../controllers/userController';
 import { tokenverify } from '../middleware/authentication';
@@ -20,5 +21,8 @@ router.post('/change-password', tokenverify, passwordChange);
 
 // Route: POST /api/v1/forget-password
 router.post('/forget-password', passwordForget);
+
+// Route: POST /api/v1/reset-password
+router.post('/reset-password', passwordReset);
 
 export default router;

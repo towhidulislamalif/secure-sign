@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
 import { User } from '../models/userModel';
 import { APIError } from '../utils/ApiError';
@@ -144,6 +145,51 @@ export const passwordForget = asyncRequestHandler(async (req, res) => {
     success: true,
     status: 200,
     message: 'Sent email successfully',
+    data: null,
+  });
+});
+
+export const passwordReset = asyncRequestHandler(async (req, res) => {
+  const userData = req.body;
+  const token = req.headers.authorization;
+
+  const { email, new_password } = userData;
+
+  if (!email || !new_password) {
+    throw new APIError(400, 'All fields are required');
+  }
+
+  if (!token) {
+    throw new APIError(401, 'No authentication token provided');
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new APIError(404, 'User not found');
+  }
+
+  const decoded = jwt.verify(token, config.access_token_secret as string) as JwtPayload;
+
+  if (user.email !== decoded.email) {
+    throw new APIError(401, 'Invalid token');
+  }
+
+  const new_hashed_password = await bcrypt.hash(new_password, 10);
+
+  await User.findOneAndUpdate(
+    { email: decoded.email },
+    {
+      $set: {
+        password: new_hashed_password,
+      },
+    },
+  );
+
+  sendApiResponse(res, {
+    success: true,
+    status: 200,
+    message: 'Password changed successfully',
     data: null,
   });
 });
