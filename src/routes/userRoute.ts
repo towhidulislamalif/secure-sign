@@ -7,7 +7,7 @@ import {
   refreshToken,
   registerUser,
 } from '../controllers/userController';
-import { tokenverify } from '../middleware/authentication';
+import { authentication } from '../middleware/authentication';
 
 const router = express.Router();
 
@@ -18,7 +18,7 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 
 // Route: POST /api/v1/change-password
-router.post('/change-password', tokenverify, passwordChange);
+router.post('/change-password', authentication, passwordChange);
 
 // Route: POST /api/v1/forget-password
 router.post('/forget-password', passwordForget);

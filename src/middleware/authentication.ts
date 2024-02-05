@@ -6,7 +6,7 @@ import { asyncRequestHandler } from '../utils/asyncRequestHandler';
 import config from '../config';
 import { User } from '../models/userModel';
 
-export const tokenverify = asyncRequestHandler(
+export const authentication = asyncRequestHandler(
   async (req: Request, _: Response, next: NextFunction) => {
     const token = req.headers.authorization;
 

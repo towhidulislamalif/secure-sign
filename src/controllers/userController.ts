@@ -6,7 +6,7 @@ import { APIError } from '../utils/ApiError';
 import { asyncRequestHandler } from '../utils/asyncRequestHandler';
 import { sendApiResponse } from '../utils/sendApiResponse';
 import { sendEmail } from '../utils/sendEmail';
-import { verifyToken } from '../utils/verifyToken';
+import { verifytoken } from '../utils/verifyToken';
 
 export const registerUser = asyncRequestHandler(async (req, res) => {
   const userData = req.body;
@@ -97,7 +97,14 @@ export const passwordChange = asyncRequestHandler(async (req, res) => {
   const checkPassword = await user.comparePassword(old_password);
 
   if (!checkPassword) {
-    throw new APIError(400, 'Password incorrect');
+    throw new APIError(400, 'Old password is incorrect');
+  }
+
+  if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(new_password)) {
+    throw new APIError(
+      400,
+      'New password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, and one digit.',
+    );
   }
 
   // password hashing
@@ -176,6 +183,13 @@ export const passwordReset = asyncRequestHandler(async (req, res) => {
     throw new APIError(401, 'Invalid token');
   }
 
+  if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(new_password)) {
+    throw new APIError(
+      400,
+      'New password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, and one digit.',
+    );
+  }
+
   const new_hashed_password = await bcrypt.hash(new_password, 10);
 
   await User.findOneAndUpdate(
@@ -199,7 +213,7 @@ export const refreshToken = asyncRequestHandler(async (req, res) => {
   const { refresh_token: token } = req.cookies;
   // console.log('🚀 ~ refreshToken ~ token:', token);
 
-  const decoded = verifyToken(token, config.refresh_token_secret as string);
+  const decoded = verifytoken(token, config.refresh_token_secret as string);
   // console.log('🚀 ~ refreshToken ~ decoded:', decoded);
 
   const user = await User.findOne({ _id: decoded._id });
