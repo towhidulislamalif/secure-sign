@@ -6,6 +6,7 @@ import { APIError } from '../utils/ApiError';
 import { asyncRequestHandler } from '../utils/asyncRequestHandler';
 import { sendApiResponse } from '../utils/sendApiResponse';
 import { sendEmail } from '../utils/sendEmail';
+import { verifyToken } from '../utils/verifyToken';
 
 export const registerUser = asyncRequestHandler(async (req, res) => {
   const userData = req.body;
@@ -191,5 +192,29 @@ export const passwordReset = asyncRequestHandler(async (req, res) => {
     status: 200,
     message: 'Password changed successfully',
     data: null,
+  });
+});
+
+export const refreshToken = asyncRequestHandler(async (req, res) => {
+  const { refresh_token: token } = req.cookies;
+  // console.log('🚀 ~ refreshToken ~ token:', token);
+
+  const decoded = verifyToken(token, config.refresh_token_secret as string);
+  // console.log('🚀 ~ refreshToken ~ decoded:', decoded);
+
+  const user = await User.findOne({ _id: decoded._id });
+  // console.log('🚀 ~ refreshToken ~ user:', user);
+
+  if (!user) {
+    throw new APIError(404, 'User not found');
+  }
+
+  const access_token = user.generateAccessToken();
+
+  sendApiResponse(res, {
+    success: true,
+    status: 200,
+    message: 'Access token sent successfully',
+    data: { access_token },
   });
 });
