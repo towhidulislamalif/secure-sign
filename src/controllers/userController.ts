@@ -145,7 +145,6 @@ export const passwordForget = asyncRequestHandler(async (req, res) => {
 
   const generateLink = `${config.uiLink}?_id=${user._id}&token=${access_token}`;
 
-  // console.log('🚀 ~ passwordForget ~ generateLink:', generateLink);
   sendEmail(email, generateLink);
 
   sendApiResponse(res, {
