@@ -66,7 +66,7 @@ export const loginUser = asyncRequestHandler(async (req, res) => {
 
   res.cookie('refresh_token', refresh_token, {
     httpOnly: true,
-    secure: config.node_env === 'PRODUCTION',
+    secure: config.is_production,
   });
 
   sendApiResponse(res, {

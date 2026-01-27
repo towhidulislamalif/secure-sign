@@ -18,6 +18,6 @@ export const globalErrorHandler: ErrorRequestHandler = (error, _, res, next) => 
     success: false,
     code: status,
     message,
-    stack: config.node_env === 'DEVELOPMENT' ? error.stack : '',
+    stack: config.is_production ? '' : error.stack,
   });
 };

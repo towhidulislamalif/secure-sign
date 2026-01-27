@@ -5,7 +5,7 @@ export const sendEmail = async (receivers: string, link: string) => {
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
-    secure: config.node_env === 'PRODUCTION',
+    secure: config.is_production,
     auth: {
       user: config.gmail,
       pass: config.gmail_pass,

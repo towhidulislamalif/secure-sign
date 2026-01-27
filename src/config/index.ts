@@ -7,6 +7,7 @@ dotenv.config({ path: path.join(process.cwd(), '.env') });
 // Configuration object
 const config = {
   node_env: process.env.NODE_ENV,
+  is_production: process.env.NODE_ENV === 'production',
   origin: process.env.CORS_ORIGIN,
   uiLink: process.env.UI_LINK,
   port: process.env.PORT || 8080,
